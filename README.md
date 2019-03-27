@@ -1,2 +1,2 @@
 # hsc-grading
-HSC Grading System In Uganda
+HSC Grading System For Uganda
