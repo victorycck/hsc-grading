@@ -71,12 +71,11 @@ $sqlpapers = "SELECT subject, paper FROM marks WHERE student = $student AND thec
                          }else{
                           //Didn't sit for the paper
                           $aggregate = 9;
-
                       }
                      //concatnate aggregates 
                     $agg .= $aggregate;
                     }
-                     //convert concatnated aggregate number into string for comparison purposes with
+                    //convert concatnated aggregate number into string for comparison purposes with
                     $aggr = strval($agg);
                   
                 $papergradestring = "SELECT CONCAT(paperone, papertwo) FROM twopapergrades";
@@ -84,6 +83,8 @@ $sqlpapers = "SELECT subject, paper FROM marks WHERE student = $student AND thec
                  while ($rowpapergrade=mysqli_fetch_row($papergraderesult)){
                     if (strcmp($rowpapergrade, $aggr) == 0) {
                       //determine grade
+                    // $grade = "SELECT grade FROM twopapergrades WHERE";
+                     //$papergraderesult = mysqli_query($conn, $papergradestring);
                      
                     }else{
                         echo 'Grade not found in system.';
