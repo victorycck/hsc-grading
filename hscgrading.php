@@ -1,4 +1,5 @@
  <?php
+  //connection to database
     $servername = "localhost";
     $username = "victorycck";
     $password = "Matthew24";
@@ -16,16 +17,14 @@
     $result = mysqli_query($conn, $sql);
     //$result = $conn->query($sql);
     $student[] = mysqli_fetch_array($result);
-    //iterate through the students
+    //For each student in the class stream
     foreach ($student) :
-        //foreach $subject_offered_by_student
+        //Get  the subjects he does based on the exams he did
         $sqlsubject = "SELECT subject FROM marks WHERE student = $student AND theclass = $theclass AND  stream = $stream AND theyear = $theyear";
         $subject = $conn->query($sqlubject);
-
-        $num_of_papers = mysqli_num_rows($subject);
-
+        //  $num_of_papers = mysqli_num_rows($subject);
         $thissubject[] = mysqli_fetch_array($subject);
-        foreach ($thissubjects) :
+        foreach ($thissubject as $ts) :
             //count $number_of_papers
             $sql2 = "SELECT COUNT(subject) FROM hscsubjects WHERE subject= $subject AND theclass = $theclass AND  stream = $stream ";
             $num_of_papers = $conn->query($sql2);
@@ -42,39 +41,71 @@
                     //find $subject_aggregate
                     $sql4 = "SELECT mark1 FROM marks WHERE  student = $student AND subject= $subject AND theclass = $theclass AND  stream = $stream ";
                     //$result=mysqli_query($con, $sql4);
-                    $students_joined_aggregates[] = mysql_fetch_array($sql4) or die(mysql_error());
+                    $aggregate_arr[] = mysql_fetch_array($sql4) or die(mysql_error());
                     //build aggregate string
-                    $students_joined_aggregates = join(array($row);
+                    $students_joined_aggregates = join(array($aggregate_arr);
                 endforeach;
 
-                //Get 
+                //Get preset aggregate marks
                 $sql5 = "SELECT paperone, papertwo FROM twopapergrades";
                 $result = mysqli_query($conn, $sql5);
                 $preset_joined_aggregates[] = mysqli_fetch_array($result));
-                foreach ($preset_joined_aggregates) :
+                foreach ($preset_joined_aggregates as $pjs) :
                     //Compare $students_joined_aggregates with $preset_joined_aggregate
-                    if (strcmp($students_joined_aggregates, $preset_joined_aggregate) == 0) {
+                    if (strcmp($students_joined_aggregates, $pjs) == 0) {
                         //get grade for subject
-                        $sql6 = "SELECT grade FROM twopapergrade WHERE $students_joined_aggregates[] = $preset_joined_aggregates[]; ";
+                        $sql6 = "SELECT grade FROM twopapergrades WHERE $students_joined_aggregates = $pjs; ";
                         $result = mysqli_query($conn, $sql6);
                         $grade = mysqli_fetch_row($result));
                     } else {
                         echo 'Grade not found in system.';
                     }
                 endforeach
-            } else { }
+            }
+            // if its a 3 paper subject
+            else if($num_of_papers==3) {
+              $sql3papers = "SELECT subject FROM hscsubjects WHERE subject= $subject AND theclass = $theclass AND  stream = $stream ";
+            //$num_of_papers = $conn->query($sql3);
+            $result_for_three_papers = mysql_query($sql3papers) or die(mysql_error());
+            $subject_paper_row = mysql_fetch_array($result_for_three_papers) or die(mysql_error());
+            echo $subject_paper_row['subject'];
+            // find aggregate for each paper
+            foreach ($subject_paper_row['subject']) :
+                //find $subject_aggregate
+                $sql4marks = "SELECT mark1 FROM marks WHERE  student = $student AND subject= $subject AND theclass = $theclass AND  stream = $stream ";
+                //$result=mysqli_query($con, $sql4);
+                $aggregate_arr[] = mysql_fetch_array($sql4marks) or die(mysql_error());
+                //build aggregate string
+                $students_joined_aggregates = join(array($aggregate_arr);
+            endforeach;
+
+            //Get preset aggregate marks
+            $sql5set_agg = "SELECT paperone, papertwo FROM twopapergrades";
+            $result_set_agg = mysqli_query($conn, $sql5set_agg);
+            $preset_joined_aggregates[] = mysqli_fetch_array($result_set_agg));
+            foreach ($preset_joined_aggregates as $pjs) :
+                //Compare $students_joined_aggregates with $preset_joined_aggregate
+                if (strcmp($students_joined_aggregates, $pjs) == 0) {
+                    //get grade for subject
+                    $sql6grade = "SELECT grade FROM twopapergrades WHERE $students_joined_aggregates = $pjs; ";
+                    $result_grade = mysqli_query($conn, $sql6grade);
+                    $grade = mysqli_fetch_row($result_grade));
+                } else {
+                    echo 'Grade not found in system.';
+                }
+            endforeach
+          }
         endforeach
         //----------------------------------------------
 
-        if ($num_of_papers == 2) {
+        /*if ($num_of_papers == 2) {
             $sql = "SELECT CONCAT(paperone, papertwo, grade) FROM twopapergrades";
             $result = $conn->query($sql);
 
             if ($result->num_rows > 0) {
-                // output data of each row
+
                 while ($row = $result->fetch_assoc()) {
                     echo "id: " . $row["id"] . " - Name: " . $row["firstname"] . " " . $row["lastname"] . "<br>";
-                    //compare set grades with grades attained by student in each subject
                 }
             } else {
                 echo "0 results";
@@ -83,14 +114,13 @@
             $sql = "SELECT CONCAT(paperone,papertwo,paperthree,grade) FROM threepapergrades";
             $result = $conn->query($s
 
-            if ($resul t->num_rows > 0)
-            // output data     of each
+            if ($result->num_rows > 0)
             while ($row = $result->fetch_assoc()) {
                 echo "id: " . $row["id"] . " - Name: " . $row["firstname"] . " " . $row["lastname"] . "<br>";
-                //compare set grades with grades attained by studen        t in eac 
+
             } else
             echo "0 results";
-        }
+        }*/
 
 
         $conn->close()
